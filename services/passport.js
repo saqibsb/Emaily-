@@ -18,8 +18,11 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: "/auth/google/callback",
-      proxy: true
+      callbackURL:
+        " https://frozen-plateau-16132.herokuapp.com/auth/google/callback"
+      //   callbackURL: "/auth/google/callback",
+      //   https://frozen-plateau-16132.herokuapp.com/
+      //   proxy: true
     },
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ googleId: profile.id }).then(existingUser => {
