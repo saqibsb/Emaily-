@@ -18,26 +18,22 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      //callbackURL:
-      // "https://frozen-plateau-16132.herokuapp.com/auth/google/callback"
       callbackURL: "/auth/google/callback",
       proxy: true
     },
-    (accessToken, refreshToken, profile, done) => {
-      User.findOne({ googleId: profile.id }).then(existingUser => {
-        if (existingUser) {
-          //return null or existing user obj.
-          //We Already Have Record with the Given User.
-          done(null, existingUser);
-        } else {
-          //Don't have record in Db.create New User
-          new User({
-            googleId: profile.id
-          })
-            .save()
-            .then(user => done(null, user));
-        }
-      });
+    async (accessToken, refreshToken, profile, done) => {
+      const existingUser = await User.findOne({ googleId: profile.id });
+      if (existingUser) {
+        //return null or existing user obj.
+        //We Already Have Record with the Given User.
+        done(null, existingUser);
+      } else {
+        //Don't have record in Db.create New User
+        const user = await new User({
+          googleId: profile.id
+        }).save();
+        done(null, user);
+      }
     }
   )
 );
